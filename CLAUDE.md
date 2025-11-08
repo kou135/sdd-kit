@@ -66,6 +66,7 @@
 - **`ui-design-advisor`** (`.claude/agents/ui-design-advisor.md`) - ダークテーマに焦点を当てたUI/UXデザイン専門家。レイアウトのレビューと改善提案を担当
 - **`spec-document-creator`** (`.claude/agents/spec-document-creator.md`) - 拡張可能な仕様書作成コマンド。機能仕様、API仕様、アーキテクチャ仕様など複数のドキュメントタイプをサポート
 - **`adr-memory-manager`** (`.claude/agents/adr-memory-manager.md`) - AI用のADR（Architecture Decision Record）を自動記録・検索・管理。JSON形式で機械可読性を最優先に設計
+- **`project-onboarding`** (`.claude/agents/project-onboarding.md`) - プロジェクトの構造、ドメイン知識、技術スタック、アーキテクチャパターンを分析・記録。新規プロジェクトのオンボーディングに最適
 
 ---
 
