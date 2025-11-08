@@ -7,7 +7,7 @@ Cursor/Claude開発環境の設定ファイルとワークフロー定義を提�
 他のプロジェクトに設定ファイルを移行するには、以下のコマンドを実行するだけです：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/imaimai17468/docdd/main/migrate.sh | bash -s -- /path/to/target-project
+curl -fsSL https://raw.githubusercontent.com/imaimai17468/docdd/main/migrate.sh | bash -s -- .
 ```
 
 **リポジトリをクローンする必要はありません！**
