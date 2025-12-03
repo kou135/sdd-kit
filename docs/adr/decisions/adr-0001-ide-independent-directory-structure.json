@@ -1,0 +1,128 @@
+{
+  "id": "ADR-0001",
+  "language": "ja",
+  "timestamp": "2025-12-03T13:10:00Z",
+  "title": "IDE非依存ディレクトリ構造への移行",
+  "status": "accepted",
+  "context": {
+    "problem": "現在のディレクトリ構造（.claude/, .cursor/）はIDE特定であり、他のAI/LLMツール（VSCode、Copilot CLI、Gemini CLI、AiderなどのCLIツール）での採用を制限している。.claude/agents/と.cursor/commands/の間に85.7%のファイル重複が存在する。さらに、.claude/settings.jsonと.cursor/settings.jsonも完全に同一内容で重複している。",
+    "constraints": [
+      "既存のCursorとClaudeユーザーとの互換性を維持する必要がある",
+      "CLIツール（Copilot CLI、Gemini CLI）をサポートする必要がある",
+      "ファイルの重複を最小限にする必要がある",
+      "ワークフロー定義の単一ソースを使用する必要がある"
+    ],
+    "requirements": [
+      "IDE/ツール非依存のディレクトリ命名",
+      "複数のAIツールのサポート",
+      "シンボリックリンクによる自動同期",
+      "チームの一貫性のためのGit管理されたIDE設定"
+    ]
+  },
+  "decision": {
+    "summary": "IDE特定のディレクトリ（.claude/, .cursor/）から統一された.llm/ディレクトリへ移行し、.ide/内のツール固有設定でシンボリックリンクを使用する",
+    "details": "1. CLAUDE.md → WORKFLOW.mdにリネームしてIDE非依存な命名にする\n2. エージェント定義を統合する.llm/ディレクトリを作成する\n3. エージェント実行権限を定義するsettings.jsonを.llm/直下に配置する\n4. ツール固有のサブディレクトリを持つ.ide/ディレクトリを作成する\n5. 各ツールの設定ファイルからWORKFLOW.mdとsettings.jsonを参照するシンボリックリンクを使用する\n6. 共通のMCPサーバー設定用にルートの.mcp.jsonを維持する\n7. .claude/agents/のファイルを正式版として採用する（adr-memory-manager.mdに1行だけの差分がある）\n8. .claude/settings.jsonを正式版として.llm/settings.jsonに移動する（.cursor/settings.jsonと完全に同一内容）",
+    "alternatives": [
+      {
+        "option": ".claude/と.cursor/を重複したまま別々に保持する",
+        "pros": ["移行不要", "既存ユーザーに影響なし"],
+        "cons": ["85.7%のファイル重複", "IDE特定の命名が採用を制限", "メンテナンス負担"],
+        "rejected": true,
+        "reason": "高い重複率と新ツールへの拡張性の低さ"
+      },
+      {
+        "option": ".llm/の代わりに.ai/を使用する",
+        "pros": ["短い名前", "より広い概念"],
+        "cons": ["抽象的すぎる", "LLM特定の目的を伝えない"],
+        "rejected": true,
+        "reason": "ユーザーが明示的な.llm/命名を好む"
+      },
+      {
+        "option": ".ide/を.gitignoreに入れて個人カスタマイズを可能にする",
+        "pros": ["開発者が自由にカスタマイズ可能"],
+        "cons": ["新メンバーがセットアップ方法を知らない", "チームの一貫性が失われる"],
+        "rejected": true,
+        "reason": "チームがGitでの統一されたIDE設定を好む"
+      },
+      {
+        "option": "シンボリックリンクの代わりにファイルをコピーする",
+        "pros": ["Windows互換性が良好"],
+        "cons": ["重複", "手動同期が必要", "単一ソースの原則に違反"],
+        "rejected": true,
+        "reason": "シンボリックリンクが自動同期を実現する"
+      },
+      {
+        "option": "フォールバックロジックで後方互換性を維持する",
+        "pros": ["段階的な移行が可能"],
+        "cons": ["複雑性の増加", "技術的負債", "新ユーザーにとって混乱"],
+        "rejected": true,
+        "reason": "互換性よりクリーンな移行を優先"
+      }
+    ],
+    "rationale": "シンボリックリンクは複数のツールをサポートしながら単一ソースを提供する。.llm/はLLM設定を明示的に示す。エージェント実行権限（settings.json）も.llm/に統一することで、ツール間での権限設定の一貫性を保証する。Git管理された.ide/はチームの一貫性を確保する。完全移行は技術的負債を排除する。",
+    "consequences": [
+      "既存の.claude/と.cursor/のすべての参照を更新する必要がある",
+      "migrate.shはOS検出とシンボリックリンク作成を含む完全な書き換えが必要",
+      "ドキュメント（README.md、articles/article.md）のパス参照を更新する必要がある",
+      "既存ユーザーは更新されたmigrate.shを実行する必要がある",
+      "Windowsユーザーはシンボリックリンクに特別な権限が必要な場合がある",
+      "将来のAIツールは.ide/に追加することで簡単に統合できる"
+    ]
+  },
+  "implementation": {
+    "affected_files": [
+      "CLAUDE.md → WORKFLOW.md（リネーム）",
+      ".claude/agents/* → .llm/agents/*（移動）",
+      ".claude/settings.json → .llm/settings.json（移動）",
+      ".cursor/ → .ide/cursor/（移動）",
+      "migrate.sh（完全書き換え）",
+      "README.md（パス参照更新）",
+      "articles/article.md（パス参照更新）",
+      ".ide/cursor/.cursorrules（WORKFLOW.mdへのシンボリックリンク）",
+      ".ide/cursor/settings.json（.llm/settings.jsonへのシンボリックリンク）",
+      ".ide/claude/.clauderc（WORKFLOW.mdへのシンボリックリンク）",
+      ".ide/claude/settings.json（.llm/settings.jsonへのシンボリックリンク）",
+      ".ide/cli/copilot-cli.md（WORKFLOW.mdへのシンボリックリンク）",
+      ".ide/cli/gemini-cli.md（WORKFLOW.mdへのシンボリックリンク）"
+    ],
+    "affected_components": [
+      "エージェント定義（7ファイル）",
+      "エージェント実行権限設定（settings.json）",
+      "IDE設定",
+      "CLIツール統合",
+      "移行スクリプト",
+      "ドキュメント"
+    ],
+    "code_patterns": [
+      "設定同期のためのシンボリックリンク",
+      "正式版としての単一WORKFLOW.md",
+      "正式版としての単一settings.json（.llm/直下）",
+      "LLM非依存設定のための.llm/",
+      "ツール固有ラッパーのための.ide/",
+      "共通MCP設定のためのルート.mcp.json"
+    ],
+    "examples": [
+      {
+        "description": "migrate.shでのシンボリックリンク作成（ワークフロー）",
+        "code": "ln -s ../../WORKFLOW.md .ide/cursor/.cursorrules"
+      },
+      {
+        "description": "migrate.shでのシンボリックリンク作成（設定）",
+        "code": "ln -s ../../.llm/settings.json .ide/cursor/settings.json\nln -s ../../.llm/settings.json .ide/claude/settings.json"
+      },
+      {
+        "description": "移行後のディレクトリ構造",
+        "code": ".llm/\n├── agents/           # エージェント定義\n│   ├── adr-memory-manager.md\n│   ├── app-code-specialist.md\n│   └── ...\n└── settings.json     # エージェント実行権限（単一ソース）\n\n.ide/\n├── cursor/\n│   ├── .cursorrules -> ../../WORKFLOW.md\n│   ├── settings.json -> ../../.llm/settings.json\n│   └── mcp.json\n├── claude/\n│   ├── .clauderc -> ../../WORKFLOW.md\n│   ├── settings.json -> ../../.llm/settings.json\n│   └── mcp.json\n└── cli/\n    ├── copilot-cli.md -> ../../WORKFLOW.md\n    └── gemini-cli.md -> ../../WORKFLOW.md"
+      }
+    ]
+  },
+  "metadata": {
+    "tags": ["アーキテクチャ", "ディレクトリ構造", "IDE非依存", "シンボリックリンク", "移行"],
+    "category": "アーキテクチャ",
+    "related_decisions": [],
+    "stakeholders": ["開発チーム", "AIツールユーザー"],
+    "review_date": "2026-06-03",
+    "supersedes": [],
+    "superseded_by": null
+  }
+}

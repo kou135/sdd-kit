@@ -4,7 +4,7 @@ description: Create and maintain Storybook stories in compliance with project ru
 tools: Read, Edit, Write, Grep, Glob
 model: inherit
 ---
-あああああ
+
 # storybook-story-creator
 
 **Role**: Create and maintain Storybook stories in compliance with project rules, supporting visual difference verification.
