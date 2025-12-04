@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# DocDDプロジェクトの設定ファイルを別プロジェクトに移行するスクリプト（IDE非依存版）
+# SDD-Kit プロジェクトの設定ファイルを別プロジェクトに移行するスクリプト（IDE非依存版）
 # 使用方法: curl -fsSL https://raw.githubusercontent.com/imaimai17468/docdd/main/migrate.sh | bash -s -- <ターゲットプロジェクトのパス>
 # または: bash <(curl -fsSL https://raw.githubusercontent.com/imaimai17468/docdd/main/migrate.sh) <ターゲットプロジェクトのパス>
 
@@ -20,7 +20,7 @@ OS_TYPE=$(detect_os)
 
 # GitHubリポジトリ情報
 REPO_OWNER="kou135"
-REPO_NAME="SDD"
+REPO_NAME="sdd-kit"
 BRANCH="main"
 BASE_URL="https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}"
 
@@ -77,7 +77,7 @@ fi
 # 絶対パスに変換
 TARGET_DIR="$(cd "$TARGET_DIR" && pwd)"
 
-echo -e "${BLUE}SDD設定ファイルの移行を開始します${NC}"
+echo -e "${BLUE}SDD-Kit 設定ファイルの移行を開始します${NC}"
 echo -e "${BLUE}リポジトリ: https://github.com/${REPO_OWNER}/${REPO_NAME}${NC}"
 echo -e "${BLUE}ターゲット: $TARGET_DIR${NC}"
 echo -e "${BLUE}OS: $OS_TYPE${NC}"
