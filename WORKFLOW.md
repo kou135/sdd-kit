@@ -403,19 +403,22 @@ relative_path: 'src/auth/user.ts'
 
 ### Phase 6: Testing & Stories (テスト・ストーリー作成) 【推奨：ロジック変更時】
 
-**使用エージェント**: test-guideline-enforcer, storybook-story-creator
+**使用エージェント**: test-guideline-enforcer, e2e-test-executor, storybook-story-creator
 
 **このフェーズをスキップできるケース:**
 - UI/表示のみの変更でロジック変更なし
 - 既存テストが十分にカバーしている場合
 - ドキュメントのみの変更
 
-#### 1. Storybook ストーリー作成
-- `storybook-story-creator` エージェントを使用
-- **条件分岐による表示切り替えのある場合のみ**ストーリーを作成
-- 単純なprops値の違いはストーリー化しない
+Phase 6 は3つのサブフェーズに分かれています：
 
-#### 2. テストコード作成
+---
+
+#### Phase 6A: Unit/Component Tests (単体・コンポーネントテスト) 【必須：ロジック変更時】
+
+**使用エージェント**: test-guideline-enforcer
+
+**1. テストコード作成**
 - `test-guideline-enforcer` エージェントを使用
 - Vitest / React Testing Libraryで実装
 - AAAパターン（Arrange-Act-Assert）を厳守
@@ -423,10 +426,71 @@ relative_path: 'src/auth/user.ts'
 - すべての条件分岐をカバー
 
 **完了チェックリスト:**
-- [ ] 必要なストーリーを作成
 - [ ] テストコードがAAAパターンに準拠
 - [ ] すべての条件分岐をカバー
 - [ ] テストタイトルが日本語で明確
+- [ ] テストが正常に実行される
+
+---
+
+#### Phase 6B: E2E Tests (エンドツーエンドテスト) 【推奨：ユーザーフロー変更時】
+
+**使用エージェント**: e2e-test-executor
+
+**このフェーズを実行すべきケース:**
+- 仕様書に受け入れ条件が定義されている場合
+- ユーザーフロー全体をテストしたい場合
+- 複数コンポーネント間の統合をテストしたい場合
+- Phase 5（Implementation）完了後
+
+**1. 受け入れ条件の確認**
+- `docs/specs/*.md` に記載された受け入れ条件を確認
+- spec-document-creator が作成した「受け入れ条件（Acceptance Criteria）」セクションを参照
+
+**2. E2E テストコード生成**
+- `e2e-test-executor` エージェントを使用
+- 受け入れ条件を Playwright テストコードに変換
+- `e2e/` ディレクトリにテストファイルを作成
+
+**3. E2E テスト実行**
+- 開発サーバーを起動（`bun run dev`）
+- Playwright MCP を使用してテスト実行
+- 失敗時はスクリーンショットとログを取得
+
+**4. テスト結果の報告**
+- 受け入れ条件のチェックリストを更新
+- テスト失敗時は詳細レポートを作成
+
+**完了チェックリスト:**
+- [ ] 受け入れ条件からE2Eテストを生成
+- [ ] すべてのユーザーフローをカバー
+- [ ] テストが正常に実行される
+- [ ] テスト失敗時のスクリーンショット取得済み
+- [ ] テスト結果を仕様書に反映
+
+---
+
+#### Phase 6C: Storybook Stories (ストーリー作成) 【推奨：UI変更時】
+
+**使用エージェント**: storybook-story-creator
+
+**1. Storybook ストーリー作成**
+- `storybook-story-creator` エージェントを使用
+- **条件分岐による表示切り替えのある場合のみ**ストーリーを作成
+- 単純なprops値の違いはストーリー化しない
+
+**完了チェックリスト:**
+- [ ] 必要なストーリーを作成
+- [ ] 条件分岐パターンをカバー
+- [ ] Storybookが正常に表示される
+
+---
+
+**Phase 6 全体の完了チェックリスト:**
+- [ ] Phase 6A: Unit/Component Tests 完了
+- [ ] Phase 6B: E2E Tests 完了（該当する場合）
+- [ ] Phase 6C: Storybook Stories 完了（該当する場合）
+- [ ] すべてのテストがパス
 
 ---
 
