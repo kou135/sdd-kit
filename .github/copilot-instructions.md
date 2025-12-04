@@ -1,10 +1,11 @@
 # Development Workflow Rules
 
-このファイルは、Cursorを使用した開発ワークフローの標準手順を定義します。
+このファイルは、Claude Codeを使用した開発ワークフローの標準手順を定義します。
 新機能の追加やバグ修正を行う際は、以下のフローに従ってください。
 
 ## 基本方針
 
+- **Phase 0で実行計画を提案し、ユーザーの承認を得てから進める**（最重要）
 - **できるだけ全てのフェーズを実行する**（タイプ別の推奨フローは下記参照）
 - **各フェーズで TodoWrite ツールを活用**して進捗を管理する
 - **不明点があれば AskUserQuestion で確認**してから進める
@@ -19,24 +20,61 @@
 
 変更のタイプに応じて、適切なフローを選択してください：
 
+**⚠️ 注意: すべてのケースで Phase 0（実行計画の提案と承認）を最初に実行します。**
+
 | 変更タイプ | 推奨フロー | 所要時間目安 | 説明 |
 |-----------|-----------|-------------|------|
-| **新機能追加** | Phase 1-11 全て | 60-120分 | 完全なワークフロー |
-| **中規模バグ修正** | 1,4,5,6,8,9A,10,11 | 30-60分 | 調査→実装→テスト→確認 |
-| **UI/デザイン調整** | 1,3,4,5,8,9A,10,11 | 20-40分 | UIデザインレビュー含む |
-| **小規模リファクタ** | 1,4,5,8,10,11 | 15-30分 | 既存パターン踏襲 |
-| **タイポ修正** | 5,8,10,11 | 5分 | 設定ファイルや小さな修正 |
-| **ドキュメント更新** | 5,10,11 | 5-10分 | ドキュメントのみの変更 |
+| **新機能追加** | Phase 0, 1-11 全て | 60-120分 | 完全なワークフロー |
+| **中規模バグ修正** | Phase 0, 1,4,5,6,8,9A,10,11 | 30-60分 | 調査→実装→テスト→確認 |
+| **UI/デザイン調整** | Phase 0, 1,3,4,5,8,9A,10,11 | 20-40分 | UIデザインレビュー含む |
+| **小規模リファクタ** | Phase 0, 1,4,5,8,10,11 | 15-30分 | 既存パターン踏襲 |
+| **タイポ修正** | Phase 0, 5,8,10,11 | 5分 | 設定ファイルや小さな修正 |
+| **ドキュメント更新** | Phase 0, 5,10,11 | 5-10分 | ドキュメントのみの変更 |
 
 **Phase 9について:**
 - **Phase 9A（簡易確認）**: 必須 - Next.js MCPでエラーチェック
 - **Phase 9B（詳細検証）**: 任意 - Chrome DevToolsでの詳細確認
+
+
+### フェーズ実行判断チェックリスト
+
+開発を始める前に、以下の質問に答えてフェーズを選択してください：
+
+#### Q1: 何を作りますか？
+- ✅ 新機能を追加 → Phase 1-11 すべて実行
+- ✅ バグ修正 → Phase 1,4,5,8,9A,10,11
+- ✅ UI変更のみ → Phase 1,3,5,8,9A,10,11
+- ✅ リファクタリング → Phase 1,4,5,7,8,10,11
+- ✅ ドキュメント修正 → Phase 5,10,11
+
+#### Q2: UIに変更がありますか？
+- ✅ はい → **Phase 3（UI/UX Design）を実行**
+- ⏭️ いいえ → Phase 3 をスキップ
+
+#### Q3: ロジックに変更がありますか？
+- ✅ はい → **Phase 6A（Unit Tests）を実行**
+- ⏭️ いいえ → Phase 6A をスキップ
+
+#### Q4: ユーザーフローに変更がありますか？
+- ✅ はい → **Phase 6B（E2E Tests）を実行**
+- ⏭️ いいえ → Phase 6B をスキップ
+
+#### Q5: アーキテクチャ設計が必要ですか？
+- ✅ はい（新機能、大規模変更） → **Phase 2（Architecture Design）を実行**
+- ⏭️ いいえ（既存パターン踏襲） → Phase 2 をスキップ
+
+#### Q6: コードレビューが必要ですか？
+- ✅ はい（複雑なロジック、リファクタリング） → **Phase 7（Code Review）を実行**
+- ⏭️ いいえ（小規模変更） → Phase 7 をスキップ
 
 ---
 
 ## フェーズ概要
 
 ### 必須フェーズ vs 任意フェーズ
+
+#### 常に最初に実行（必須）
+0. **Phase 0: Workflow Planning** - 実行計画の提案と承認取得
 
 #### 必須フェーズ（ほぼすべてのケースで実行）
 1. **Phase 1: Investigation & Research** - Context7/Kiriで調査
@@ -60,17 +98,173 @@
 
 以下のカスタムコマンドが利用可能です：
 
-- **`component-refactoring-specialist`** (`.cursor/commands/app-code-specialist.md`) - Reactコンポーネントのリファクタリング専門家。ロジック抽出、プレゼンターパターン適用、ディレクトリ構造の再編成を担当
-- **`test-guideline-enforcer`** (`.cursor/commands/test-guideline-enforcer.md`) - Vitest / React Testing Libraryを使用したテストコードの品質、構造、命名規約を強制
-- **`storybook-story-creator`** (`.cursor/commands/storybook-story-creator.md`) - プロジェクトルールに準拠したStorybookストーリーの作成とメンテナンス
-- **`ui-design-advisor`** (`.cursor/commands/ui-design-advisor.md`) - ダークテーマに焦点を当てたUI/UXデザイン専門家。レイアウトのレビューと改善提案を担当
-- **`spec-document-creator`** (`.cursor/commands/spec-document-creator.md`) - 拡張可能な仕様書作成コマンド。機能仕様、API仕様、アーキテクチャ仕様など複数のドキュメントタイプをサポート
-- **`adr-memory-manager`** (`.cursor/commands/adr-memory-manager.md`) - AI用のADR（Architecture Decision Record）を自動記録・検索・管理。JSON形式で機械可読性を最優先に設計
-- **`project-onboarding`** (`.cursor/commands/project-onboarding.md`) - プロジェクトの構造、ドメイン知識、技術スタック、アーキテクチャパターンを分析・記録。新規プロジェクトのオンボーディングに最適
+- **`component-refactoring-specialist`** (`.claude/agents/app-code-specialist.md`) - Reactコンポーネントのリファクタリング専門家。ロジック抽出、プレゼンターパターン適用、ディレクトリ構造の再編成を担当
+- **`test-guideline-enforcer`** (`.claude/agents/test-guideline-enforcer.md`) - Vitest / React Testing Libraryを使用したテストコードの品質、構造、命名規約を強制
+- **`storybook-story-creator`** (`.claude/agents/storybook-story-creator.md`) - プロジェクトルールに準拠したStorybookストーリーの作成とメンテナンス
+- **`ui-design-advisor`** (`.claude/agents/ui-design-advisor.md`) - ダークテーマに焦点を当てたUI/UXデザイン専門家。レイアウトのレビューと改善提案を担当
+- **`spec-document-creator`** (`.claude/agents/spec-document-creator.md`) - 拡張可能な仕様書作成コマンド。機能仕様、API仕様、アーキテクチャ仕様など複数のドキュメントタイプをサポート
+- **`adr-memory-manager`** (`.claude/agents/adr-memory-manager.md`) - AI用のADR（Architecture Decision Record）を自動記録・検索・管理。JSON形式で機械可読性を最優先に設計
+- **`project-onboarding`** (`.claude/agents/project-onboarding.md`) - プロジェクトの構造、ドメイン知識、技術スタック、アーキテクチャパターンを分析・記録。新規プロジェクトのオンボーディングに最適
 
 ---
 
 ## Workflow Steps
+
+### Phase 0: Workflow Planning (実行計画) 【最初に必ず実行】
+
+**使用ツール**: なし（ユーザーとの対話のみ）
+
+**⚠️ 重要: すべての開発タスクは Phase 0 から開始します。実装を始める前に必ずユーザーの承認を得てください。**
+
+このフェーズでは、ユーザーの要求を分析し、実行すべきフェーズを提案して承認を得ます。
+
+#### 1. 要求の分析
+
+ユーザーが提示したタスクから以下を特定：
+- **変更タイプ**: 新機能追加/バグ修正/UI変更/リファクタリング/ドキュメント更新
+- **変更範囲**: 影響を受けるファイル数、複雑さ、影響範囲
+- **特殊要件**: パフォーマンス、セキュリティ、アクセシビリティなどの考慮事項
+
+#### 2. フェーズ実行計画の提案
+
+クイックリファレンステーブルとフェーズ実行判断チェックリストを参照し、以下の形式で提案：
+
+```markdown
+📋 実行計画の提案
+
+## 変更タイプ
+[新機能追加/バグ修正/UI変更/リファクタリング/ドキュメント更新]
+
+## 変更概要
+[ユーザーが実現したい内容の要約]
+
+## 実行予定のフェーズ
+
+### 必須フェーズ
+- ✅ Phase 1: Investigation & Research
+  理由: [既存コード/パターンの調査が必要]
+- ✅ Phase 4: Planning
+  理由: [実装計画の立案が必要]
+- ✅ Phase 5: Implementation
+  理由: [コード実装が必要]
+- ✅ Phase 8: Quality Checks
+  理由: [型チェック、Lint、テスト実行が必須]
+- ✅ Phase 9A: Runtime Verification
+  理由: [Next.js MCPでランタイムエラー確認が必須]
+- ✅ Phase 10: Git Commit
+  理由: [変更のコミットが必要]
+- ✅ Phase 11: Push
+  理由: [リモートへのプッシュが必要]
+
+### 任意フェーズ（実行/スキップの判断）
+- ✅ Phase 2: Architecture Design
+  理由: [新機能のため、アーキテクチャ設計が必要]
+  または
+- ⏭️ Phase 2: Architecture Design
+  スキップ理由: [既存パターンに完全に倣うため]
+
+- ✅ Phase 3: UI/UX Design
+  理由: [UI変更があるため、デザインレビューが必要]
+  または
+- ⏭️ Phase 3: UI/UX Design
+  スキップ理由: [UIに変更がないため]
+
+- ✅ Phase 6A: Unit Tests
+  理由: [ロジック変更があるため、単体テストが必要]
+  または
+- ⏭️ Phase 6A: Unit Tests
+  スキップ理由: [ロジック変更がないため]
+
+- ✅ Phase 6B: E2E Tests
+  理由: [ユーザーフロー変更があるため、E2Eテストが必要]
+  または
+- ⏭️ Phase 6B: E2E Tests
+  スキップ理由: [ユーザーフロー変更がないため]
+
+- ✅ Phase 6C: Storybook Stories
+  理由: [UI変更があり、条件分岐パターンがあるため]
+  または
+- ⏭️ Phase 6C: Storybook Stories
+  スキップ理由: [条件分岐がないため]
+
+- ✅ Phase 7: Code Review
+  理由: [複雑なロジックがあり、リファクタリングが必要]
+  または
+- ⏭️ Phase 7: Code Review
+  スキップ理由: [シンプルな実装のため]
+
+- ✅ Phase 9B: Browser Verification
+  理由: [複雑なUIインタラクション/パフォーマンス測定が必要]
+  または
+- ⏭️ Phase 9B: Browser Verification
+  スキップ理由: [Phase 9Aで十分なため]
+
+## 所要時間見積もり
+約[X-Y]分
+
+## この計画で進めてよろしいでしょうか？
+
+以下のいずれかでご回答ください：
+- 「はい」または「OK」→ この計画通りに進めます
+- 「Phase Xを追加」→ 指定フェーズを追加して再提案します
+- 「Phase Xを削除」→ 指定フェーズを削除して再提案します
+- 「後で決める」→ Phase 1から始めて途中で判断します
+```
+
+#### 3. ユーザー承認の取得
+
+- **明示的な承認を得てから**Phase 1に進む
+- ユーザーが調整を要求した場合は、計画を修正して再提案
+- 承認が得られるまで実装を開始しない
+
+**承認パターン:**
+- ✅ 「はい」「OK」「問題ない」「進めて」→ Phase 1に進む
+- 🔄 「Phase Xを追加/削除」→ 計画を修正して再提案
+- ⏸️ 「後で決める」→ Phase 1から始めて途中で相談しながら進める
+
+#### 4. 承認後の進行
+
+- 承認された計画をもとにPhase 1から順次実行
+- 各フェーズの開始時に「**Phase X: [名前] を開始します**」と明示
+- 各フェーズの完了時に「**Phase X: 完了 ✅**」と報告
+- 計画にないフェーズが必要になった場合は、ユーザーに確認してから実行
+
+#### 5. 計画の記録（推奨）
+
+承認された実行計画を `docs/plans/YYYY-MM-DD-workflow-plan.md` に記録することを推奨：
+
+```markdown
+# Workflow実行計画: [タスク名]
+
+## 作成日
+YYYY-MM-DD HH:MM:SS
+
+## 変更タイプ
+[新機能追加/バグ修正/UI変更/リファクタリング/ドキュメント更新]
+
+## 実行フェーズ
+- Phase 0: Workflow Planning ✅
+- Phase 1: Investigation & Research
+- Phase 2: Architecture Design (スキップ/実行)
+- ...
+
+## ユーザー承認
+日時: YYYY-MM-DD HH:MM:SS
+承認内容: [ユーザーの承認コメント]
+```
+
+**完了チェックリスト:**
+- [ ] ユーザーの要求を理解した
+- [ ] 変更タイプを特定した
+- [ ] クイックリファレンスを参照した
+- [ ] フェーズ実行判断チェックリストを確認した
+- [ ] 実行すべきフェーズを提案した（✅/⏭️ を明記）
+- [ ] スキップ理由を説明した
+- [ ] 所要時間を見積もった
+- [ ] ユーザーから明示的な承認を得た
+- [ ] 承認された計画を記録した（推奨）
+
+---
 
 ### Phase 1: Investigation & Research (調査フェーズ) 【必須】
 
@@ -132,16 +326,17 @@ path: 'src/auth/login.ts'
 - **ADR確認方法**:
   1. `docs/adr/index.json`を確認して関連ADRを特定
   2. 関連するADRファイル（`docs/adr/decisions/*.json`）を読み込む
-  3. 特に以下のカテゴリのADRを確認:
-     - **アーキテクチャパターン**: コンポーネントの設計パターン、データ取得戦略、状態管理方法など
-     - **ドメイン知識**: プロジェクト固有のドメインエンティティ、ビジネスロジック、必須実装要件など
-       - **重要**: ドメイン知識ADRに新規コンポーネント作成時の必須実装要件が記載されている場合、必ず確認
-       - `affected_files`や`affected_components`を確認して、必要な登録や設定ファイルへの追加を特定
-     - **プロジェクト構造**: ディレクトリ構造、命名規則、ファイル配置ルールなど
-  4. **新規コンポーネント作成時の確認事項**:
-     - デモコンポーネントやドキュメント実装が必要か確認
-     - レジストリや設定ファイルへの登録が必要か確認
-     - 必要なメタデータや設定の追加が必要か確認
+  3. 特に以下のADRを確認:
+     - **ADR-0003**: アーキテクチャパターン（Server Components、Client Components、Props-based controlなど）
+     - **ADR-0004**: ドメイン知識（コンポーネントレジストリの構造、Props定義、**Demo実装の必要性**など）
+       - **重要**: ADR-0004には「Demo」がドメインエンティティとして含まれており、新規コンポーネント作成時はデモ実装が必須
+       - `affected_files`に`demo-registry.ts`が含まれていることを確認
+       - `affected_components`に「Demo components」が含まれていることを確認
+     - **ADR-0001**: プロジェクト構造（ディレクトリ構造、命名規則など）
+  4. **ADR-0004の確認事項（新規コンポーネント作成時）**:
+     - デモコンポーネントの実装が必要か確認
+     - `demo-registry.ts`への登録が必要か確認
+     - `components.ts`への`ComponentConfig`追加が必要か確認
   5. 実装がADRの決定と一致しているか確認
   6. 新しい決定が必要な場合は`adr-memory-manager`エージェントを使用して記録
 
@@ -161,7 +356,7 @@ path: 'src/auth/login.ts'
 - [ ] 必要なライブラリのドキュメントを確認
 - [ ] 既存パターンと依存関係を把握
 - [ ] **ADRを確認し、既存決定を理解**（必須 - コード調査とは別に実行）
-- [ ] **ドメイン知識ADRを確認し、新規コンポーネント作成時の必須実装要件を判断**（新規コンポーネント作成時は必須）
+- [ ] **ADR-0004を確認し、デモ実装の必要性を判断**（新規コンポーネント作成時は必須）
 - [ ] 実装がADRの決定と一致していることを確認
 
 ---
@@ -201,7 +396,7 @@ path: 'src/auth/login.ts'
 - 関連するADRとリンク
 
 #### 5. パフォーマンス考慮事項
-- フレームワーク固有の機能活用（Next.jsのCache Components、Server Componentsなど）
+- Next.js 16の機能活用（Cache Components, Server Componentsなど）
 - レンダリング戦略（SSR, SSG, ISRなど）
 - 画像最適化、コード分割など
 
@@ -281,32 +476,94 @@ path: 'src/auth/login.ts'
 
 ### Phase 4: Planning (計画立案) 【必須】
 
-**使用ツール**: TodoWrite tool
+**使用ツール**: TodoWrite tool, Write tool
 
 **⚠️ 重要: Phase 1とPhase 3の確認**
 - **Phase 4の前に必ず確認**:
-  - **Phase 1のADR確認が完了しているか確認**（必須）
-  - UI変更がある場合はPhase 3が完了し、ユーザー承認を得ているか確認
+- **Phase 1のADR確認が完了しているか確認**（必須）
+- UI変更がある場合はPhase 3が完了し、ユーザー承認を得ているか確認
 - Phase 3で承認された改善案を実装計画に反映
 - **ADRの決定に従った実装計画になっているか確認**
 
-#### 1. 実装計画の作成
+#### 1. 実装計画書の作成（推奨）
+
+**docs/plans/ に実装計画書を作成**:
+
+**ファイル名の形式**:
+```
+docs/plans/YYYY-MM-DD-[feature-name].md
+
+例:
+docs/plans/2024-12-05-counter-component.md
+docs/plans/2024-12-05-user-authentication.md
+```
+
+**実装計画書のテンプレート**:
+```markdown
+# 実装計画: [機能名]
+
+## 作成日
+YYYY-MM-DD
+
+## タスク概要
+[簡潔な説明（1-2行）]
+
+## 実装方針
+- [方針1: 例: Client Component として実装]
+- [方針2: 例: useState でカウント管理]
+- [方針3: 例: Tailwind CSS でスタイリング]
+
+## ファイル構成
+- [ファイル1: 例: app/counter/page.tsx]
+- [ファイル2: 例: components/counter-button.tsx（必要に応じて）]
+
+## タスク分解
+1. [ ] タスク1
+2. [ ] タスク2
+3. [ ] タスク3
+4. [ ] タスク4
+5. [ ] タスク5
+
+## 技術的決定
+- **[決定1]**
+  - 理由: [理由を記載]
+  - 代替案: [検討した他の方法]
+- **[決定2]**
+  - 理由: [理由を記載]
+
+## 参考
+- [ADR-XXXX] 関連するアーキテクチャ決定記録
+- [既存実装] 参考にした既存コード
+```
+
+**実装計画書作成のポイント**:
+- **実装方針**: どのように実装するか（HOW）を記載
+- **技術的決定**: なぜその方法を選んだか（WHY）を記載
+- **ファイル構成**: 作成・変更するファイルを明記
+- **タスク分解**: 実装の手順を具体的に記載
+
+**スキップ可能なケース**:
+- ⏭️ タイポ修正
+
+#### 2. TodoWrite でタスク管理
+- 実装計画書のタスクを TodoWrite に登録
 - タスクを細分化し、実装順序を決定
-- TodoWriteツールで作業項目をトラッキング
 - 各タスクの依存関係を明確化
 - **Phase 3で承認された改善案をタスクに含める**
 - **ADRの決定に従った実装方針を確認**
 
-#### 2. 計画のレビュー
+#### 3. 計画のレビュー
 - 不明確な要件や仕様の洗い出し
 - 必要に応じて `AskUserQuestion` で確認
 - **実装計画がADRの決定と一致しているか確認**
+- **実装計画書の内容が明確で実装可能か確認**
 
 **注意**: ExitPlanModeツールはplan modeでのみ使用されます。通常の実装フローではTodoWriteのみを使用してください。
 
 **完了チェックリスト:**
 - [ ] **Phase 1のADR確認が完了している**（必須）
 - [ ] UI変更がある場合、Phase 3が完了し承認を得ている
+- [ ] 実装計画書を作成した
 - [ ] TodoWriteで全タスクを登録
 - [ ] Phase 3で承認された改善案をタスクに含めた
 - [ ] **実装計画がADRの決定と一致している**
@@ -402,48 +659,111 @@ relative_path: 'src/auth/user.ts'
 
 ### Phase 6: Testing & Stories (テスト・ストーリー作成) 【推奨：ロジック変更時】
 
-**使用エージェント**: test-guideline-enforcer, storybook-story-creator
+**使用エージェント**: test-guideline-enforcer, e2e-test-executor, storybook-story-creator
 
 **このフェーズをスキップできるケース:**
 - UI/表示のみの変更でロジック変更なし
 - 既存テストが十分にカバーしている場合
 - ドキュメントのみの変更
 
-#### 1. Storybook ストーリー作成
-- `storybook-story-creator` エージェントを使用
-- **条件分岐による表示切り替えのある場合のみ**ストーリーを作成
-- 単純なprops値の違いはストーリー化しない
+Phase 6 は3つのサブフェーズに分かれています：
 
-#### 2. テストコード作成
+---
+
+#### Phase 6A: Unit/Component Tests (単体・コンポーネントテスト) 【必須：ロジック変更時】
+
+**使用エージェント**: test-guideline-enforcer
+
+**1. テストコード作成**
 - `test-guideline-enforcer` エージェントを使用
 - Vitest / React Testing Libraryで実装
 - AAAパターン（Arrange-Act-Assert）を厳守
 - 日本語のテストタイトル
 - すべての条件分岐をカバー
 
-#### 3. ドキュメント・デモ実装（新規コンポーネント作成時は必須）
-
-**⚠️ 重要: 新規コンポーネント作成時は必ず実装**
-- ドキュメントサイトで動作確認できるデモコンポーネントを作成
-- プロジェクト固有のデモディレクトリ構造に従って配置
-- デモレジストリや設定ファイルに登録
-- コンポーネントメタデータを設定ファイルに追加
-
-**デモ実装の手順:**
-1. デモコンポーネントファイルを作成（プロジェクトの命名規則に従う）
-2. プロジェクト固有のデモコンポーネント（DemoSection、DemoCardなど）を使用して複数の使用例を表示
-3. PC/SPの動作の違いを確認できるデモを含める（該当する場合）
-4. デモレジストリファイルにエントリを追加
-5. コンポーネント設定ファイルにメタデータを追加（slug、name、category、description、props、codeExampleなど）
-
 **完了チェックリスト:**
-- [ ] 必要なストーリーを作成
 - [ ] テストコードがAAAパターンに準拠
 - [ ] すべての条件分岐をカバー
 - [ ] テストタイトルが日本語で明確
-- [ ] **新規コンポーネントの場合、Webデモを実装**（必須）
-- [ ] デモがデモレジストリに登録されている
-- [ ] コンポーネントが設定ファイルに登録されている
+- [ ] テストが正常に実行される
+
+---
+
+#### Phase 6B: E2E Tests (エンドツーエンドテスト) 【推奨：ユーザーフロー変更時】
+
+**使用エージェント**: e2e-test-executor
+**使用ツール**: Playwright (UI Mode)
+
+**このフェーズを実行すべきケース:**
+- 仕様書に受け入れ条件が定義されている場合
+- ユーザーフロー全体をテストしたい場合
+- 複数コンポーネント間の統合をテストしたい場合
+- Phase 5（Implementation）完了後
+
+**⚠️ 重要: E2Eテストは専用のディレクトリ構造で管理します**
+
+```
+e2e/
+└── {feature-name}/              # 機能ごとのディレクトリ（kebab-case）
+    ├── specs/                   # テストコード
+    │   └── {feature-name}.spec.ts
+    ├── img/                     # スクリーンショット
+    │   ├── test-results-success.png
+    │   ├── {feature-name}-initial.png
+    │   └── README.md
+    └── results/                 # テスト結果（Playwright自動生成）
+        └── playwright-report/
+```
+
+**実行手順:**
+0. **事前チェック(受け入れ条件の確認)**
+   - `docs/specs/*.md` に記載された受け入れ条件を確認
+   - spec-document-creator が作成した「受け入れ条件（Acceptance Criteria）」セクションを参照
+
+1. **`e2e-test-executor` エージェントを使用してテスト生成・実行**
+   - ディレクトリ構造を作成（`e2e/{feature-name}/{specs,img,results}`）
+   - Playwright テストコードを生成（`specs/` 配下）
+   - Playwright UIモードでテスト実行
+   - スクリーンショットを取得（`img/` 配下）
+   - README.mdでテスト結果を記録
+
+2. **詳細はエージェントドキュメントを参照**
+   - エージェント: `.llm/agents/e2e-test-executor.md`
+   - ディレクトリ構造、テスト生成、UIモード実行、スクリーンショット取得などの詳細手順が記載されています
+
+**完了チェックリスト:**
+- [ ] `e2e/{feature-name}/{specs,img,results}` ディレクトリ構造を作成
+- [ ] 受け入れ条件からE2Eテストを生成
+- [ ] Playwright UIモードでテストを実行
+- [ ] すべてのユーザーフローをカバー
+- [ ] テストが正常に実行される
+- [ ] スクリーンショットを `img/` に保存
+- [ ] README.mdでテスト結果を記録
+- [ ] テスト結果を仕様書に反映
+
+---
+
+#### Phase 6C: Storybook Stories (ストーリー作成) 【推奨：UI変更時】
+
+**使用エージェント**: storybook-story-creator
+
+**1. Storybook ストーリー作成**
+- `storybook-story-creator` エージェントを使用
+- **条件分岐による表示切り替えのある場合のみ**ストーリーを作成
+- 単純なprops値の違いはストーリー化しない
+
+**完了チェックリスト:**
+- [ ] 必要なストーリーを作成
+- [ ] 条件分岐パターンをカバー
+- [ ] Storybookが正常に表示される
+
+---
+
+**Phase 6 全体の完了チェックリスト:**
+- [ ] Phase 6A: Unit/Component Tests 完了
+- [ ] Phase 6B: E2E Tests 完了（該当する場合）
+- [ ] Phase 6C: Storybook Stories 完了（該当する場合）
+- [ ] すべてのテストがパス
 
 ---
 
@@ -494,16 +814,16 @@ relative_path: 'src/auth/user.ts'
 
 ```bash
 # 型チェック
-npm run type-check  # または bun run type-check, yarn type-check など
+bun run type-check
 
 # Lint
-npm run lint  # または bun run lint, yarn lint など
+bun run lint
 
 # テスト実行
-npm run test  # または bun run test, yarn test など
+bun run test
 
 # ビルド確認
-npm run build  # または bun run build, yarn build など
+bun run build
 ```
 
 #### 2. エラーの修正
@@ -534,7 +854,7 @@ npm run build  # または bun run build, yarn build など
 
 1. **開発サーバー起動**
    ```bash
-   npm run dev  # または bun run dev, yarn dev など
+   bun run dev
    ```
 
 2. **Next.js Runtime確認（必須）**
