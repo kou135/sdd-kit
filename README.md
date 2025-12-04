@@ -1,13 +1,13 @@
 # DocDD (Documentation-Driven Development)
 
-IDE非依存のLLM開発環境設定とワークフロー定義を提供するプロジェクトです。
+LLM開発環境設定とワークフロー定義を提供するプロジェクトです。
 
 ## クイックスタート
 
 他のプロジェクトに設定ファイルを移行するには、以下のコマンドを実行するだけです：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/imaimai17468/docdd/main/migrate.sh | bash -s -- .
+curl -fsSL https://raw.githubusercontent.com/kou135/sdd/main/migrate.sh | bash -s -- .
 ```
 
 **リポジトリをクローンする必要はありません！**
@@ -16,29 +16,29 @@ curl -fsSL https://raw.githubusercontent.com/imaimai17468/docdd/main/migrate.sh 
 
 ```bash
 # カレントディレクトリに移行
-curl -fsSL https://raw.githubusercontent.com/imaimai17468/docdd/main/migrate.sh | bash -s -- .
+curl -fsSL https://raw.githubusercontent.com/kou135/sdd/main/migrate.sh | bash -s -- .
 
 # 特定のプロジェクトに移行
-curl -fsSL https://raw.githubusercontent.com/imaimai17468/docdd/main/migrate.sh | bash -s -- /Users/username/my-project
+curl -fsSL https://raw.githubusercontent.com/kou135/sdd/main/migrate.sh | bash -s -- /Users/username/my-project
 
 # 相対パスでも指定可能
-curl -fsSL https://raw.githubusercontent.com/imaimai17468/docdd/main/migrate.sh | bash -s -- ../my-project
+curl -fsSL https://raw.githubusercontent.com/kou135/sdd/main/migrate.sh | bash -s -- ../my-project
 
 # 既存ファイルを確認せずに上書き（--yes または -y オプション）
-curl -fsSL https://raw.githubusercontent.com/imaimai17468/docdd/main/migrate.sh | bash -s -- --yes /path/to/target-project
+curl -fsSL https://raw.githubusercontent.com/kou135/sdd/main/migrate.sh | bash -s -- --yes /path/to/target-project
 ```
 
 ### 別の実行方法
 
 ```bash
 # プロセス置換方式（bash 4.0+）
-bash <(curl -fsSL https://raw.githubusercontent.com/imaimai17468/docdd/main/migrate.sh) /path/to/target-project
+bash <(curl -fsSL https://raw.githubusercontent.com/kou135/sdd/main/migrate.sh) /path/to/target-project
 ```
 
 ## 移行されるファイル
 
 ### ルートレベル
-- `WORKFLOW.md` - 開発ワークフローの定義（Phase 1-11）※IDE非依存
+- `WORKFLOW.md` - 開発ワークフローの定義（Phase 0-11
 - `MCP_REFERENCE.md` - MCPコマンドの詳細リファレンス
 - `.mcp.json` - MCP設定
 
@@ -71,19 +71,20 @@ bash <(curl -fsSL https://raw.githubusercontent.com/imaimai17468/docdd/main/migr
 
 開発作業は11のフェーズに分かれており、変更のタイプに応じて適切なフェーズを選択します：
 
-| 変更タイプ | 推奨フロー | 所要時間目安 |
-|-----------|-----------|-------------|
-| **新機能追加** | Phase 1-11 全て | 60-120分 |
-| **中規模バグ修正** | 1,4,5,6,8,9A,10,11 | 30-60分 |
-| **UI/デザイン調整** | 1,3,4,5,8,9A,10,11 | 20-40分 |
-| **小規模リファクタ** | 1,4,5,8,10,11 | 15-30分 |
-| **タイポ修正** | 5,8,10,11 | 5分 |
-| **ドキュメント更新** | 5,10,11 | 5-10分 |
+| 変更タイプ | 推奨フロー | 所要時間目安 | 説明 |
+|-----------|-----------|-------------|------|
+| **新機能追加** | Phase 0, 1-11 全て | 60-120分 | 完全なワークフロー |
+| **中規模バグ修正** | Phase 0, 1,4,5,6,8,9A,10,11 | 30-60分 | 調査→実装→テスト→確認 |
+| **UI/デザイン調整** | Phase 0, 1,3,4,5,8,9A,10,11 | 20-40分 | UIデザインレビュー含む |
+| **小規模リファクタ** | Phase 0, 1,4,5,8,10,11 | 15-30分 | 既存パターン踏襲 |
+| **タイポ修正** | Phase 0, 5,8,10,11 | 5分 | 設定ファイルや小さな修正 |
+| **ドキュメント更新** | Phase 0, 5,10,11 | 5-10分 | ドキュメントのみの変更 |
 
 ### 必須フェーズ
 
 ほぼすべてのケースで実行するフェーズ：
 
+0. **Phase 0: Workflow Planning** - 実行計画の提案と承認取得
 1. **Phase 1: Investigation & Research** - Context7/Kiriで調査
 4. **Phase 4: Planning** - TodoWriteで計画立案
 5. **Phase 5: Implementation** - Serenaでコード実装
@@ -185,7 +186,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/imaimai17468/docdd/main/migr
 `--yes`（または`-y`、`--force`、`-f`）オプションを使用すると、既存ファイルを確認せずに上書きします：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/imaimai17468/docdd/main/migrate.sh | bash -s -- --yes /path/to/target-project
+curl -fsSL https://raw.githubusercontent.com/kou135/sdd/main/migrate.sh | bash -s -- --yes /path/to/target-project
 ```
 
 **注意**: パイプ経由で実行しても、`--yes`オプションがない場合は対話的に確認されます。端末から`y`または`n`を入力してください。
@@ -421,7 +422,7 @@ ls -la /path/to/target-project
 
 ```bash
 # GitHubへの接続確認
-curl -I https://raw.githubusercontent.com/imaimai17468/docdd/main/migrate.sh
+curl -I https://raw.githubusercontent.com/kou135/sdd/main/migrate.sh
 ```
 
 ## 詳細ドキュメント
@@ -430,8 +431,27 @@ curl -I https://raw.githubusercontent.com/imaimai17468/docdd/main/migrate.sh
 - [MCP_REFERENCE.md](./MCP_REFERENCE.md) - MCPコマンドリファレンス
 - [docs/adr/](./docs/adr/) - アーキテクチャ決定記録（ADR）
 
-## ライセンス
+## 📜 ライセンス
 
 このプロジェクトの設定ファイルは、MITライセンスの下で公開されています。
 
 詳細は [LICENSE](./LICENSE) ファイルを参照してください。
+
+## 🙏 Credits
+
+This project is based on [DocDD](https://github.com/imaimai17468/docdd) by [@imaimai17468](https://github.com/imaimai17468).
+
+### Original Project
+- **Repository**: https://github.com/imaimai17468/docdd
+- **Author**: [@imaimai17468](https://github.com/imaimai17468)
+- **License**: MIT
+
+### Key Improvements in This Fork
+- 🏗️ **IDE-independent directory structure** (`.llm/`, `.ide/`)
+- 🤖 **8 specialized agents** (including e2e-test-executor)
+- 🔗 **Additional MCP integrations** (Playwright MCP, Figma MCP)
+- 📚 **Enhanced documentation** and CLI support
+- 🔄 **Improved workflow** with phase selection guide
+- 📋 **Implementation plan templates** (docs/plans/)
+
+We are grateful to imaimai17468 for creating the original DocDD framework that this project builds upon.
