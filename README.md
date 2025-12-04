@@ -1,4 +1,4 @@
-# DocDD (Documentation-Driven Development)
+# SDD-Kit (Specification-Driven Development Kit)
 
 LLM開発環境設定とワークフロー定義を提供するプロジェクトです。
 
@@ -7,7 +7,7 @@ LLM開発環境設定とワークフロー定義を提供するプロジェク�
 他のプロジェクトに設定ファイルを移行するには、以下のコマンドを実行するだけです：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/kou135/sdd/main/migrate.sh | bash -s -- .
+curl -fsSL https://raw.githubusercontent.com/kou135/sdd-kit/main/migrate.sh | bash -s -- .
 ```
 
 **リポジトリをクローンする必要はありません！**
@@ -16,23 +16,23 @@ curl -fsSL https://raw.githubusercontent.com/kou135/sdd/main/migrate.sh | bash -
 
 ```bash
 # カレントディレクトリに移行
-curl -fsSL https://raw.githubusercontent.com/kou135/sdd/main/migrate.sh | bash -s -- .
+curl -fsSL https://raw.githubusercontent.com/kou135/sdd-kit/main/migrate.sh | bash -s -- .
 
 # 特定のプロジェクトに移行
-curl -fsSL https://raw.githubusercontent.com/kou135/sdd/main/migrate.sh | bash -s -- /Users/username/my-project
+curl -fsSL https://raw.githubusercontent.com/kou135/sdd-kit/main/migrate.sh | bash -s -- /Users/username/my-project
 
 # 相対パスでも指定可能
-curl -fsSL https://raw.githubusercontent.com/kou135/sdd/main/migrate.sh | bash -s -- ../my-project
+curl -fsSL https://raw.githubusercontent.com/kou135/sdd-kit/main/migrate.sh | bash -s -- ../my-project
 
 # 既存ファイルを確認せずに上書き（--yes または -y オプション）
-curl -fsSL https://raw.githubusercontent.com/kou135/sdd/main/migrate.sh | bash -s -- --yes /path/to/target-project
+curl -fsSL https://raw.githubusercontent.com/kou135/sdd-kit/main/migrate.sh | bash -s -- --yes /path/to/target-project
 ```
 
 ### 別の実行方法
 
 ```bash
 # プロセス置換方式（bash 4.0+）
-bash <(curl -fsSL https://raw.githubusercontent.com/kou135/sdd/main/migrate.sh) /path/to/target-project
+bash <(curl -fsSL https://raw.githubusercontent.com/kou135/sdd-kit/main/migrate.sh) /path/to/target-project
 ```
 
 ## 移行されるファイル
@@ -186,7 +186,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/kou135/sdd/main/migrate.sh) 
 `--yes`（または`-y`、`--force`、`-f`）オプションを使用すると、既存ファイルを確認せずに上書きします：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/kou135/sdd/main/migrate.sh | bash -s -- --yes /path/to/target-project
+curl -fsSL https://raw.githubusercontent.com/kou135/sdd-kit/main/migrate.sh | bash -s -- --yes /path/to/target-project
 ```
 
 **注意**: パイプ経由で実行しても、`--yes`オプションがない場合は対話的に確認されます。端末から`y`または`n`を入力してください。
@@ -217,7 +217,7 @@ CLI ツール（GitHub Copilot CLI、Gemini CLI など）はシンボリック�
 
 #### 必要な設定ファイル
 
-CLI ツールで DocDD を使用するには、以下のファイルを設定する必要があります：
+CLI ツールで SDD-Kit を使用するには、以下のファイルを設定する必要があります：
 
 | ファイル | 用途 | 必須/任意 |
 |---------|------|-----------|
@@ -402,7 +402,7 @@ IDE ツールを使用すれば、シンボリックリンクによる自動同�
 ```bash
 cd /path/to/target-project
 git add .llm/ .ide/ WORKFLOW.md MCP_REFERENCE.md .mcp.json
-git commit -m "chore: add DocDD development workflow configuration (IDE-independent)"
+git commit -m "chore: add SDD-Kit development workflow configuration (IDE-independent)"
 ```
 
 ## トラブルシューティング
@@ -422,7 +422,7 @@ ls -la /path/to/target-project
 
 ```bash
 # GitHubへの接続確認
-curl -I https://raw.githubusercontent.com/kou135/sdd/main/migrate.sh
+curl -I https://raw.githubusercontent.com/kou135/sdd-kit/main/migrate.sh
 ```
 
 ## 詳細ドキュメント
@@ -454,4 +454,4 @@ This project is based on [DocDD](https://github.com/imaimai17468/docdd) by [@ima
 - 🔄 **Improved workflow** with phase selection guide
 - 📋 **Implementation plan templates** (docs/plans/)
 
-We are grateful to imaimai17468 for creating the original DocDD framework that this project builds upon.
+We are grateful to imaimai17468 for creating the original DocDD (Documentation-Driven Development) framework that this project builds upon.
