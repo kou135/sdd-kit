@@ -21,7 +21,7 @@ OS_TYPE=$(detect_os)
 # GitHubリポジトリ情報
 REPO_OWNER="kou135"
 REPO_NAME="SDD"
-BRANCH="main"
+BRANCH="fix-agent-rules"
 BASE_URL="https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}"
 
 # カラー出力用
