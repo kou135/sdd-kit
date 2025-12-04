@@ -117,6 +117,7 @@ ROOT_FILES=(
 LLM_AGENTS=(
     "adr-memory-manager.md"
     "app-code-specialist.md"
+    "e2e-test-executor.md"
     "project-onboarding.md"
     "spec-document-creator.md"
     "storybook-story-creator.md"
