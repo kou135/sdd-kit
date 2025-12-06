@@ -728,7 +728,7 @@ e2e/
    - README.mdでテスト結果を記録
 
 2. **詳細はエージェントドキュメントを参照**
-   - エージェント: `.llm/agents/e2e-test-executor.md`
+   - エージェント: `.agent-rules/agents/e2e-test-executor.md`
    - ディレクトリ構造、テスト生成、UIモード実行、スクリーンショット取得などの詳細手順が記載されています
 
 **完了チェックリスト:**

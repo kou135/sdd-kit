@@ -113,8 +113,8 @@ ROOT_FILES=(
     ".mcp.json"
 )
 
-# .llm/agents/ のファイル
-LLM_AGENTS=(
+# .agent-rules/agents/ のファイル
+AGENT_RULES_AGENTS=(
     "adr-memory-manager.md"
     "app-code-specialist.md"
     "e2e-test-executor.md"
@@ -186,57 +186,57 @@ for file in "${ROOT_FILES[@]}"; do
     fi
 done
 
-# .llm/agents/ のファイルをダウンロード
+# .agent-rules/agents/ のファイルをダウンロード
 echo ""
-echo -e "${YELLOW}.llm/agents/ のファイル:${NC}"
-mkdir -p "$TARGET_DIR/.llm/agents"
-for file in "${LLM_AGENTS[@]}"; do
+echo -e "${YELLOW}.agent-rules/agents/ のファイル:${NC}"
+mkdir -p "$TARGET_DIR/.agent-rules/agents"
+for file in "${AGENT_RULES_AGENTS[@]}"; do
     temp_file="$TEMP_DIR/$file"
-    if download_file ".llm/agents/$file" "$temp_file"; then
-        target_file="$TARGET_DIR/.llm/agents/$file"
+    if download_file ".agent-rules/agents/$file" "$temp_file"; then
+        target_file="$TARGET_DIR/.agent-rules/agents/$file"
 
         if [ -f "$target_file" ]; then
             if [ "$FORCE_OVERWRITE" = true ]; then
-                echo -e "    ${YELLOW}既存ファイルを上書き: .llm/agents/$file${NC}"
+                echo -e "    ${YELLOW}既存ファイルを上書き: .agent-rules/agents/$file${NC}"
             else
-                if ! should_overwrite ".llm/agents/$file"; then
-                    echo "    スキップ: .llm/agents/$file"
+                if ! should_overwrite ".agent-rules/agents/$file"; then
+                    echo "    スキップ: .agent-rules/agents/$file"
                     continue
                 fi
             fi
         fi
 
         cp "$temp_file" "$target_file"
-        echo -e "    ${GREEN}コピー完了: .llm/agents/$file${NC}"
+        echo -e "    ${GREEN}コピー完了: .agent-rules/agents/$file${NC}"
     fi
 done
 
-# .llm/settings.json をダウンロード
+# .agent-rules/settings.json をダウンロード
 echo ""
-echo -e "${YELLOW}.llm/settings.json:${NC}"
-temp_file="$TEMP_DIR/llm-settings.json"
-if download_file ".llm/settings.json" "$temp_file"; then
-    target_file="$TARGET_DIR/.llm/settings.json"
+echo -e "${YELLOW}.agent-rules/settings.json:${NC}"
+temp_file="$TEMP_DIR/agent-rules-settings.json"
+if download_file ".agent-rules/settings.json" "$temp_file"; then
+    target_file="$TARGET_DIR/.agent-rules/settings.json"
 
     if [ -f "$target_file" ]; then
         if [ "$FORCE_OVERWRITE" = true ]; then
-            echo -e "    ${YELLOW}既存ファイルを上書き: .llm/settings.json${NC}"
+            echo -e "    ${YELLOW}既存ファイルを上書き: .agent-rules/settings.json${NC}"
             mkdir -p "$(dirname "$target_file")"
             cp "$temp_file" "$target_file"
-            echo -e "    ${GREEN}コピー完了: .llm/settings.json${NC}"
+            echo -e "    ${GREEN}コピー完了: .agent-rules/settings.json${NC}"
         else
-            if should_overwrite ".llm/settings.json"; then
+            if should_overwrite ".agent-rules/settings.json"; then
                 mkdir -p "$(dirname "$target_file")"
                 cp "$temp_file" "$target_file"
-                echo -e "    ${GREEN}コピー完了: .llm/settings.json${NC}"
+                echo -e "    ${GREEN}コピー完了: .agent-rules/settings.json${NC}"
             else
-                echo "    スキップ: .llm/settings.json"
+                echo "    スキップ: .agent-rules/settings.json"
             fi
         fi
     else
         mkdir -p "$(dirname "$target_file")"
         cp "$temp_file" "$target_file"
-        echo -e "    ${GREEN}コピー完了: .llm/settings.json${NC}"
+        echo -e "    ${GREEN}コピー完了: .agent-rules/settings.json${NC}"
     fi
 fi
 
@@ -288,12 +288,12 @@ mkdir -p "$TARGET_DIR/.ide/claude"
 # Cursorのシンボリックリンク
 cd "$TARGET_DIR/.ide/cursor"
 ln -sf ../../WORKFLOW.md .cursorrules 2>/dev/null && echo -e "  ${GREEN}✓${NC} .ide/cursor/.cursorrules -> WORKFLOW.md" || echo -e "  ${RED}✗${NC} .ide/cursor/.cursorrules (failed)"
-ln -sf ../../.llm/settings.json settings.json 2>/dev/null && echo -e "  ${GREEN}✓${NC} .ide/cursor/settings.json -> .llm/settings.json" || echo -e "  ${RED}✗${NC} .ide/cursor/settings.json (failed)"
+ln -sf ../../.agent-rules/settings.json settings.json 2>/dev/null && echo -e "  ${GREEN}✓${NC} .ide/cursor/settings.json -> .agent-rules/settings.json" || echo -e "  ${RED}✗${NC} .ide/cursor/settings.json (failed)"
 
 # Claudeのシンボリックリンク
 cd "$TARGET_DIR/.ide/claude"
 ln -sf ../../WORKFLOW.md .clauderc 2>/dev/null && echo -e "  ${GREEN}✓${NC} .ide/claude/.clauderc -> WORKFLOW.md" || echo -e "  ${RED}✗${NC} .ide/claude/.clauderc (failed)"
-ln -sf ../../.llm/settings.json settings.json 2>/dev/null && echo -e "  ${GREEN}✓${NC} .ide/claude/settings.json -> .llm/settings.json" || echo -e "  ${RED}✗${NC} .ide/claude/settings.json (failed)"
+ln -sf ../../.agent-rules/settings.json settings.json 2>/dev/null && echo -e "  ${GREEN}✓${NC} .ide/claude/settings.json -> .agent-rules/settings.json" || echo -e "  ${RED}✗${NC} .ide/claude/settings.json (failed)"
 
 cd "$TARGET_DIR"
 
@@ -304,18 +304,18 @@ echo "移行されたファイル:"
 echo "  - WORKFLOW.md (開発ワークフロー定義 - IDE非依存)"
 echo "  - MCP_REFERENCE.md (MCPコマンドリファレンス)"
 echo "  - .mcp.json (MCP設定)"
-echo "  - .llm/agents/*.md (LLMエージェント定義)"
-echo "  - .llm/settings.json (エージェント実行権限設定)"
+echo "  - .agent-rules/agents/*.md (AIエージェント定義)"
+echo "  - .agent-rules/settings.json (エージェント実行権限設定)"
 echo "  - .ide/cursor/mcp.json (Cursor MCP設定)"
 echo ""
 echo "作成されたシンボリックリンク:"
 echo "  - .ide/cursor/.cursorrules -> WORKFLOW.md"
-echo "  - .ide/cursor/settings.json -> .llm/settings.json"
+echo "  - .ide/cursor/settings.json -> .agent-rules/settings.json"
 echo "  - .ide/claude/.clauderc -> WORKFLOW.md"
-echo "  - .ide/claude/settings.json -> .llm/settings.json"
+echo "  - .ide/claude/settings.json -> .agent-rules/settings.json"
 echo ""
 echo "ディレクトリ構造:"
-echo "  .llm/              # LLM共通設定"
+echo "  .agent-rules/      # エージェント共通設定"
 echo "    ├── agents/      # エージェント定義（単一ソース）"
 echo "    └── settings.json # 実行権限設定（単一ソース）"
 echo "  .ide/              # IDE固有設定"
@@ -333,5 +333,5 @@ echo "  詳細は README.md の「CLIツールでの使用方法」セクショ�
 echo ""
 echo "  設定が必要なファイル:"
 echo "    - WORKFLOW.md（開発ワークフロー）"
-echo "    - .llm/settings.json（エージェント実行権限）"
+echo "    - .agent-rules/settings.json（エージェント実行権限）"
 echo "    - .mcp.json（MCP設定）"
