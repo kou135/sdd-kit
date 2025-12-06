@@ -42,8 +42,8 @@ bash <(curl -fsSL https://raw.githubusercontent.com/kou135/sdd-kit/main/migrate.
 - `MCP_REFERENCE.md` - MCPコマンドの詳細リファレンス
 - `.mcp.json` - MCP設定
 
-### .llm/ ディレクトリ（LLM共通設定）
-- `.llm/agents/*.md` - LLMエージェント定義（8種類）
+### .agent-rules/ ディレクトリ（LLM共通設定）
+- `.agent-rules/agents/*.md` - AIエージェント定義（8種類）
   - `adr-memory-manager.md` - ADR記録管理
   - `app-code-specialist.md` - Reactコンポーネントリファクタリング
   - `e2e-test-executor.md` - E2Eテスト自動生成・実行 ⭐NEW
@@ -52,14 +52,14 @@ bash <(curl -fsSL https://raw.githubusercontent.com/kou135/sdd-kit/main/migrate.
   - `storybook-story-creator.md` - Storybookストーリー作成
   - `test-guideline-enforcer.md` - 単体・コンポーネントテスト
   - `ui-design-advisor.md` - UI/UXデザインレビュー（Figma MCP対応） ⭐UPDATE
-- `.llm/settings.json` - エージェント実行権限設定
+- `.agent-rules/settings.json` - エージェント実行権限設定
 
 ### .ide/ ディレクトリ（IDE固有設定）
 - `.ide/cursor/mcp.json` - Cursor MCP設定
 - `.ide/cursor/.cursorrules` → `WORKFLOW.md`（シンボリックリンク）
-- `.ide/cursor/settings.json` → `.llm/settings.json`（シンボリックリンク）
+- `.ide/cursor/settings.json` → `.agent-rules/settings.json`（シンボリックリンク）
 - `.ide/claude/.clauderc` → `WORKFLOW.md`（シンボリックリンク）
-- `.ide/claude/settings.json` → `.llm/settings.json`（シンボリックリンク）
+- `.ide/claude/settings.json` → `.agent-rules/settings.json`（シンボリックリンク）
 
 **注意**: CLI ツール（GitHub Copilot CLI、Gemini CLI など）は手動設定が必要です。詳細は下記「CLIツールでの使用方法」を参照してください。
 
@@ -198,7 +198,7 @@ curl -fsSL https://raw.githubusercontent.com/kou135/sdd-kit/main/migrate.sh | ba
 新しいIDE非依存のディレクトリ構造を採用しています：
 
 ```
-.llm/              # LLM共通設定（単一ソース）
+.agent-rules/      # LLM共通設定（単一ソース）
 ├── agents/        # エージェント定義
 └── settings.json  # 実行権限設定
 
@@ -222,7 +222,7 @@ CLI ツールで SDD-Kit を使用するには、以下のファイルを設定�
 | ファイル | 用途 | 必須/任意 |
 |---------|------|-----------|
 | `WORKFLOW.md` | 開発ワークフロー定義 | 必須 |
-| `.llm/settings.json` | エージェント実行権限設定 | 推奨 |
+| `.agent-rules/settings.json` | エージェント実行権限設定 | 推奨 |
 | `.mcp.json` | MCP サーバー設定 | 推奨 |
 
 ---
@@ -276,7 +276,7 @@ CLI ツールでエージェントを使用する場合、実行権限を設定�
 
 ```bash
 # settings.json の内容を確認
-cat .llm/settings.json
+cat .agent-rules/settings.json
 
 # 出力例:
 # {
@@ -350,7 +350,7 @@ WORKFLOW.md や設定を更新した場合、**再度手動でコピー**する�
 cp WORKFLOW.md ~/.config/github-copilot/instructions.md
 
 # settings.json を更新した場合（該当ツールのみ）
-cp .llm/settings.json <ツールの設定ディレクトリ>/
+cp .agent-rules/settings.json <ツールの設定ディレクトリ>/
 
 # .mcp.json を更新した場合
 sed -i '' "s|{{PROJECT_PATH}}|$(pwd)|g" .mcp.json
@@ -375,7 +375,7 @@ cp .mcp.json <ツールの設定ディレクトリ>/
 1. **MCP設定** (`.mcp.json`, `.ide/cursor/mcp.json`)
    - プロジェクト固有のMCPサーバー設定を確認
 
-2. **エージェント実行権限** (`.llm/settings.json`)
+2. **エージェント実行権限** (`.agent-rules/settings.json`)
    - プロジェクト固有の実行権限を確認
 
 3. **ワークフロー定義** (`WORKFLOW.md`)
@@ -387,7 +387,7 @@ cp .mcp.json <ツールの設定ディレクトリ>/
 
 ```bash
 cd /path/to/target-project
-git add .llm/ .ide/ WORKFLOW.md MCP_REFERENCE.md .mcp.json
+git add .agent-rules/ .ide/ WORKFLOW.md MCP_REFERENCE.md .mcp.json
 git commit -m "chore: add SDD-Kit development workflow configuration (IDE-independent)"
 ```
 
@@ -433,7 +433,7 @@ This project is based on [DocDD](https://github.com/imaimai17468/docdd) by [@ima
 - **License**: MIT
 
 ### Key Improvements in This Fork
-- 🏗️ **IDE-independent directory structure** (`.llm/`, `.ide/`)
+- 🏗️ **IDE-independent directory structure** (`.agent-rules/`, `.ide/`)
 - 🤖 **8 specialized agents** (including e2e-test-executor)
 - 🔗 **Additional MCP integrations** (Playwright MCP, Figma MCP)
 - 📚 **Enhanced documentation** and CLI support
