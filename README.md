@@ -1,6 +1,6 @@
 # SDD-Kit (Specification-Driven Development Kit)
 
-LLM開発環境設定とワークフロー定義を提供するプロジェクトです。
+ AIエージェント開発環境設定とワークフロー定義を提供するプロジェクトです。
 
 ## クイックスタート
 
